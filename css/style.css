@@ -186,19 +186,68 @@ img {
 }
 
 /* ========================================
-   Hero Section
+   Hero Slider Section
    ======================================== */
-.hero {
+.hero-slider {
     position: relative;
     height: 100vh;
+    overflow: hidden;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
 }
 
-.hero::before {
+.hero-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+.slide-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1);
+    transition: transform 8s ease-out;
+}
+
+.hero-slide.active .slide-background {
+    transform: scale(1.1);
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+    z-index: 1;
+}
+
+.hero-overlay::before {
     content: '';
     position: absolute;
     top: 0;
@@ -206,8 +255,8 @@ img {
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
     animation: heroGlow 15s ease-in-out infinite;
 }
 
@@ -220,7 +269,78 @@ img {
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 2rem;
+}
+
+/* Slider Navigation */
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 50%;
+    color: var(--accent-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s var(--transition-smooth);
+    backdrop-filter: blur(10px);
+}
+
+.slider-nav:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--accent-color);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.slider-nav.prev {
+    left: 2rem;
+}
+
+.slider-nav.next {
+    right: 2rem;
+}
+
+.slider-nav svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Slider Pagination */
+.slider-pagination {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 1rem;
+}
+
+.slider-pagination .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.slider-pagination .dot:hover {
+    background: rgba(212, 175, 55, 0.5);
+    transform: scale(1.2);
+}
+
+.slider-pagination .dot.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    width: 35px;
+    border-radius: 6px;
 }
 
 .hero-title {
@@ -266,24 +386,27 @@ img {
     to { opacity: 1; }
 }
 
-.cta-button {
+.hero-slider .cta-button {
     display: inline-block;
     padding: 1.2rem 3rem;
     background: transparent;
     border: 2px solid var(--accent-color);
     color: var(--accent-color);
     font-size: 0.95rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-weight: 600;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     opacity: 0;
     animation: fadeIn 1s var(--transition-smooth) 1.2s forwards;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.3);
 }
 
-.cta-button::before {
+.hero-slider .cta-button::before {
     content: '';
     position: absolute;
     top: 0;
@@ -295,12 +418,14 @@ img {
     z-index: -1;
 }
 
-.cta-button:hover {
+.hero-slider .cta-button:hover {
     color: var(--primary-bg);
+    border-color: var(--accent-hover);
 }
 
-.cta-button:hover::before {
+.hero-slider .cta-button:hover::before {
     left: 0;
+    background: var(--accent-hover);
 }
 
 .scroll-indicator {
@@ -338,6 +463,9 @@ img {
 section {
     padding: 8rem 0;
     position: relative;
+}
+.hero-slider{
+    padding: 0;
 }
 
 .section-header {
@@ -737,6 +865,39 @@ section {
 
 .footer-brand p {
     color: var(--secondary-text);
+    margin-bottom: 1.5rem;
+}
+
+/* Social Media Icons */
+.social-media {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-media a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 50%;
+    color: var(--accent-color);
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.social-media a:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--primary-bg);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.social-media a svg {
+    width: 20px;
+    height: 20px;
 }
 
 .footer-links {
@@ -1142,6 +1303,33 @@ section {
 
     .section-header {
         margin-bottom: 3rem;
+    }
+
+    /* Slider responsive adjustments */
+    .slider-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .slider-nav.prev {
+        left: 1rem;
+    }
+
+    .slider-nav.next {
+        right: 1rem;
+    }
+
+    .slider-pagination {
+        bottom: 2rem;
+    }
+
+    .slider-pagination .dot {
+        width: 10px;
+        height: 10px;
+    }
+
+    .slider-pagination .dot.active {
+        width: 28px;
     }
 }
 
